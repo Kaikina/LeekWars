@@ -1,8 +1,9 @@
 # LeekWars
 
 Salut tout le monde, c'est Kaikina. 
-Je vous partage cette libraire que vous êtes libres d'utiliser pour vos IAs. Pour l'utiliser vous devez
-créer une IA et coller mon code dedans puis dans votre IA écrire en début de
+
+Je vous partage cette librairie que vous êtes libres d'utiliser pour vos IAs. Pour l'utiliser vous devez
+créer une IA et coller mon code dedans. Puis dans votre IA écrire en début de
 fichier : 
 
 include("le nom de l'ia qui contient mon code");
