@@ -228,6 +228,24 @@ function getDeadTarget(enemies, chip)
 	}
 }
 
+/* 
+Fonction gestBestChipTarget(mode, range, chip)
+Niveau 38
+205 opérations
+
+Renvoie la meilleure cible à portée [range] sur laquelle utiliser la puce [chip] selon le mode de calcul [mode].
+
+Paramètres : 
+
+	- mode : Le mode de calcul ("LESS_RESISTANCE" : La cible qui subira le plus de dégâts
+								"LESS_HEALTH" : La cible avec le moins de vie
+								"DEAD" : La cible qui peut se faire tuer
+	- range : La portée à laquelle analyser les ennemis
+	- chip : La puce à utiliser
+Retour : 
+
+	- Renvoie l'id du poireau à portée [range] sur lequel utiliser la puce [chip] selon la méthode [mode]. Renvoie [null] si aucun poireau ne correspond.
+*/
 function getBestChipTarget(mode, range, chip)
 {
 	var enemies = getEnemiesInRange(range, getLeek());
