@@ -312,7 +312,7 @@ function getDeadTarget(enemies, idDamages)
 }
 
 /* 
-Fonction gestBestChipTarget(mode, range, chip)
+Fonction getBestChipTarget(mode, range, chip)
 Niveau 38
 Opérations variables
 
