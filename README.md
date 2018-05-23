@@ -14,3 +14,6 @@ Je mettrai cette librairie régulièrement à jour alors n'hésitez pas à reven
 Postez également sur le forum les problèmes que vous encontrez.
 
 Bye !
+
+Edit : Il y a désormais une IA complète (minimax.js) qui est mon implémentation, et ma compréhension personnelle d'un algorithme minimax. Il n'est pas du tout poussé, il permet simplement de gagner jusqu'au niveau 7 environ. Il est possible de passer quelques niveaux de + en affrontant des joueurs < au niveau 7/9.
+Il m'a permis de monter niveau 9 avec 0 défaites.
