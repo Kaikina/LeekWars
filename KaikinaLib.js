@@ -1,4 +1,4 @@
-﻿include("CasesAccessibles");
+include("CasesAccessibles");
 
 /* 
 Fonction chipWillKill(chip, enemy)
@@ -918,5 +918,13 @@ function getCellsToHide()
 	return cellsToHide;
 }
 
-
-
+function getCellsToUseWeaponFrom(weapon, cell, leek)
+{
+	var cells = [];
+	for (var i = 0; i < 613; i++)
+	{
+		if (getDistance(cell, i) <= getWeaponMaxRange(weapon) && lineOfSight(cell, i, leek))
+			push(cells, i);
+	}
+	return cells;
+}
