@@ -1,27 +1,19 @@
 include("CasesAccessibles");
 
-/* 
-Fonction chipWillKill(chip, enemy)
-Niveau 38
-307 opérations
-
-Renvoie si la puce [chip] peut tuer l'ennemi [enemy].
-
-Paramètres : 
-
-	- chip : L'id de la puce à utiliser
-	- enemy : L'id du leek sur lequel utiliser la puce
-	
-Retour : 
-
-	- Renvoie [true] si le poireau [enemy] est tuable avec la puce [chip]. Renvoie [false] dans le cas contraire.
-*/
-function chipWillKill(chip, enemy)
+/**
+ * Returns if the usage of a chip on a leek will kill it.
+ * 283 operations.
+ *
+ * @param chip that will be used.
+ * @param leek to use the chip on.
+ * @returns {boolean} that will be true if the chip will kill the leek.
+ */
+function chipWillKill(chip, leek)
 {
 	var chipStats = getChipEffects(chip);
 	var chipDamage = (chipStats[0][1] + chipStats[0][2]) / 2;
-	if ((chipDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy) >= getLife(enemy)) return true;
-	else return false;
+	return (chipDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(leek) / 100) - getAbsoluteShield(leek)
+		>= getLife(leek);
 }
 
 /*
