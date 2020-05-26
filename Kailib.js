@@ -1029,13 +1029,13 @@ function hasChip(leek, chip) {
  * leeks or obstacles.
  * Opérations variables.
  *
- * @param myCell cell from where to find reachable cells.
- * @param myMP the number of movement points that can be used.
+ * @param cell cell from where to find reachable cells.
+ * @param mp the number of movement points that can be used.
  * @returns {[]} An array of reachable cells from a cell with a number of movement points.
  */
-function getMoves(myCell, myMP)
+function getMoves(cell, mp)
 {
-	var area = getArea(myCell, myMP);
+	var area = getArea(cell, mp);
 	var availableCells = [];
 	for (var cell : var distance in area) {
 		push(availableCells, cell);
