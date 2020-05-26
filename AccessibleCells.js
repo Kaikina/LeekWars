@@ -1,7 +1,7 @@
 /*
-*   Bundle de fonctions permettant de récupérer les cases accessibles pour un coût très
-*   faible (1000ops maximum pour 3MP, 40kops pour l'intégralité de la map)
-*   Accessible niveau 21 de manière optimisée, 16 de manière moins opti, une version 
+*   Bundle de fonctions permettant de rÃ©cupÃ©rer les cases accessibles pour un coÃ»t trÃ¨s
+*   faible (1000ops maximum pour 3MP, 40kops pour l'intÃ©gralitÃ© de la map)
+*   Accessible niveau 21 de maniÃ¨re optimisÃ©e, 16 de maniÃ¨re moins opti, une version 
 *   level 5 fonctionne en solo
 */
 
@@ -11,7 +11,7 @@ global _enemies = [];
 
 /*
 *   @brief Initialise le cache des obstacles et des voisins
-*   A ne lancer qu'une seule fois en début de partie !
+*   A ne lancer qu'une seule fois en dÃ©but de partie !
 *   @level 5 ou 21
 */
 function init(){
@@ -52,8 +52,8 @@ function init(){
 }
 
 /*
-*   @brief Met à jour le cache de position des ennemis
-*   A ne lancer qu'une fois en début de tour !
+*   @brief Met Ã  jour le cache de position des ennemis
+*   A ne lancer qu'une fois en dÃ©but de tour !
 *   @level 16
 */
 function beginTurn() {
@@ -64,25 +64,25 @@ function beginTurn() {
 }
 
 /*
-*   @brief Retourne toutes les cases accessibles depuis une cellule donnée avec un 
+*   @brief Retourne toutes les cases accessibles depuis une cellule donnÃ©e avec un 
 *   certain nombre de MP
-*   Nécessite d'avoir utilisé les fonctions init et beginTurn pour fonctionner 
+*   NÃ©cessite d'avoir utilisÃ© les fonctions init et beginTurn pour fonctionner 
 *   correctement
 *   @level 1
-*   @param origin La cellule depuis laquelle le déplacement commence
-*   @param radius Le nombre de MP à notre disposition
+*   @param origin La cellule depuis laquelle le dÃ©placement commence
+*   @param radius Le nombre de MP Ã  notre disposition
 *   @return Un tableau associatif de la forme cellule -> distance
 */
 function getArea(@origin, @radius){
     var i = 0, toCheck = [origin], dist = 0, tmp, cells = [origin: -1];
     
     while(dist < radius) {
-        // on récupère les voisins de tous les elements à checker
+        // on rÃ©cupÃ¨re les voisins de tous les elements Ã  checker
         ++dist;
         tmp = count(toCheck);
         while(i < tmp) {
             for(var k in _voisins[toCheck[i]]) {
-                // on regarde si ce voisin n'a jamais été vu
+                // on regarde si ce voisin n'a jamais Ã©tÃ© vu
                 if(!cells[k] && !_enemies[k]) {
                     push(toCheck, k);
                     cells[k] = dist;
