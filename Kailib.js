@@ -15,55 +15,54 @@ Paramètres :
 Retour : 
 
 	- Renvoie [true] si le poireau [enemy] est tuable avec la puce [chip]. Renvoie [false] dans le cas contraire.
-*/ 
-function chipWillKill(chip, enemy) 
+*/
+function chipWillKill(chip, enemy)
 {
 	var chipStats = getChipEffects(chip);
-	var chipDamage = (chipStats[0][2] + chipStats[0][1]) / 2;
+	var chipDamage = (chipStats[0][1] + chipStats[0][2]) / 2;
 	if ((chipDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy) >= getLife(enemy)) return true;
 	else return false;
 }
 
-/* 
+/*
 Fonction weaponWillKill(weapon, enemy)
 Niveau 38
 307 opérations
 
 Renvoie si l'arme [weapon] peut tuer l'ennemi [enemy].
 
-Paramètres : 
+Paramètres :
 
 	- weapon : L'id de l'arme à utiliser
 	- enemy : L'id du leek sur lequel utiliser l'arme
-	
-Retour : 
+
+Retour :
 
 	- Renvoie [true] si le poireau [enemy] est tuable avec l'arme [weapon]. Renvoie [false] dans le cas contraire.
-*/ 
+*/
 function weaponWillKill(weapon, enemy)
 {
-	var weaponStats = getWeaponEffects(weapon);
-	var weaponDamage = (weaponStats[0][2] + weaponStats[0][1]) / 2;
-	if ((weaponDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy) >= getLife(enemy)) return true;
+	var damages = calcWeaponDamages(weapon,  enemy);
+	if (damages > getLife(enemy)) return true;
 	else return false;
 }
 
-/* 
+/*
 Fonction getEnemiesInRange(range, from) : enemiesInRange
 Niveau 16
 Opérations variables
 
 Renvoie un tableau contenant les ennemis à portée [range] de la cellule [from].
 
-Paramètres : 
+Paramètres :
 
 	- range : La portée sur laquelle vérifier la présence d'ennemis exprimée en nombre de cellules
 	- from : L'id de la cellule à partir de laquelle vérifier la présence d'ennemis
-	
-Retour : 
+
+Retour :
 
 	- enemiesInRange : Un tableau contenant la liste des id des ennemis se situant à portée [range] de la cellule [from]. Renvoie [null] si aucun résultat n'a été trouvé.
-*/ 
+*/
 function getEnemiesInRange(range, from)
 {
 	var enemiesInRange = [];
@@ -74,22 +73,22 @@ function getEnemiesInRange(range, from)
 	else return (enemiesInRange = null);
 }
 
-/* 
+/*
 Fonction getAlliesInRange(range, from) : alliesInRange
 Niveau 16
 Opérations variables
 
 Renvoie un tableau contenant les alliés à portée [range] de la cellule [from].
 
-Paramètres : 
+Paramètres :
 
 	- range : La portée sur laquelle vérifier la présence d'alliés exprimée en nombre de cellules
 	- from : L'id de la cellule à partir de laquelle vérifier la présence d'alliés
-	
-Retour : 
+
+Retour :
 
 	- alliesInRange : Un tableau contenant la liste des id des alliés se situant à portée [range] de la cellule [from]. Renvoie [null] si aucun résultat n'a été trouvé.
-*/ 
+*/
 function getAlliesInRange(range, from)
 {
 	var alliesInRange = [];
@@ -99,18 +98,18 @@ function getAlliesInRange(range, from)
 		return (alliesInRange);
 	else return (alliesInRange = null);
 }
-/* 
+/*
 Fonction unitHasEffect(unit)
 Niveau 61
 25 opérations
 
 Renvoie si l'entité [unit] possède des effets.
 
-Paramètres : 
+Paramètres :
 
 	- unit : L'id de l'entité
-	
-Retour : 
+
+Retour :
 
 	- Renvoie [true] si l'entité possède des effets, si non [false].
 */
@@ -120,19 +119,19 @@ function unitHasEffect(unit)
 	else return false;
 }
 
-/* 
+/*
 Fonction unitHasEffectOfType(unit, effectType)
 Niveau 61
 26 opérations
 
 Renvoie si l'entité [unit] possède des effets de type [effectType].
 
-Paramètres : 
+Paramètres :
 
 	- unit : L'id de l'entité
 	- effectType : L'id de l'effet
-	
-Retour : 
+
+Retour :
 
 	- Renvoie [true] si l'entité possède des effets de type [effectType], si non [false].
 */
@@ -145,19 +144,19 @@ function unitHasEffectOfType(unit, effectType)
 	}
 }
 
-/* 
+/*
 Fonction calcChipDamages(chip, enemy)
 Niveau 38
 313 opérations
 
 Renvoie le nombre de dégâts que peut occasionner la puce [chip] sur l'ennemi [enemy].
 
-Paramètres : 
+Paramètres :
 
 	- chip : L'id de la puce
 	- enemy : L'id du poireau
-	
-Retour : 
+
+Retour :
 
 	- Renvoie le montant de dégâts que peut occasionner la puce arrondi au plus proche sur une moyenne de dégâts.
 */
@@ -168,19 +167,19 @@ function calcChipDamages(chip, enemy)
 	return (round(chipDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy));
 }
 
-/* 
+/*
 Fonction calcWeaponDamages(weapon, enemy)
 Niveau 38
 313 opérations
 
 Renvoie le nombre de dégâts que peut occasionner l'arme [weapon] sur l'ennemi [enemy].
 
-Paramètres : 
+Paramètres :
 
 	- weapon : L'id de l'arme
 	- enemy : L'id du poireau
-	
-Retour : 
+
+Retour :
 
 	- Renvoie le montant de dégâts que peut occasionner l'arme arrondi au plus proche sur une moyenne de dégâts.
 */
@@ -188,22 +187,26 @@ function calcWeaponDamages(weapon, enemy)
 {
 	var weaponStats = getWeaponEffects(weapon);
 	var weaponDamage = (weaponStats[0][2] + weaponStats[0][1]) / 2;
-	return (round(weaponDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy));
+	var totalDamages = 0;
+	for (var i = 0; i < count(weaponStats); i++) {
+		totalDamages += round((weaponStats[i][1] + weaponStats[i][2]) / 2 * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy);
+	}
+	return totalDamages;
 }
 
-/* 
+/*
 Fonction getLessResistanceTarget(enemies, idDamages)
 Niveau 38
 Opérations variables
 
 Renvoie la cible la moins résistante parmis les ennemis [enemies] avec l'objet [idDamages].
 
-Paramètres : 
+Paramètres :
 
 	- enemies : Un tableau contenant les id des ennemis
 	- idDamages : L'id de l'objet dont provient les dégâts
-	
-Retour : 
+
+Retour :
 
 	- Renvoi la cible [target] la moins résistante. Renvoie [null] si aucune cible n'est trouvée. Renvoie [null] si l'objet [idDamages] passé en paramètre est incorrect.
 */
@@ -242,18 +245,18 @@ function getLessResistanceTarget(enemies, idDamages)
 	else return null;
 }
 
-/* 
+/*
 Fonction getLessHealthTarget(enemies)
 Niveau 1
 Opérations variables
 
 Renvoie la cible avec le moins de vie parmis les enemis [enemies].
 
-Paramètres : 
+Paramètres :
 
 	- enemies : Un tableau contenant les id des ennemis
-	
-Retour : 
+
+Retour :
 
 	- Renvoi la cible [target] avec le moins de vie. Renvoie [null] si aucune cible n'est trouvée.
 */
@@ -272,19 +275,19 @@ function getLessHealthTarget(enemies)
 	return target;
 }
 
-/* 
+/*
 Fonction getDeadTarget(enemies, idDamages)
 Niveau 1
 Opérations variables
 
 Renvoie la cible parmis les ennemis [enemies] qui sera tuée en utilisant l'objet [idDamages].
 
-Paramètres : 
+Paramètres :
 
 	- enemies : Un tableau contenant les id des ennemis
 	- idDamages : L'id de l'objet dont provient les dégâts
-	
-Retour : 
+
+Retour :
 
 	- Renvoi la cible [enemy] qui sera tué. Renvoie [null] si aucun ennemi ne peut être tué.
 */
@@ -311,21 +314,21 @@ function getDeadTarget(enemies, idDamages)
 	else return null;
 }
 
-/* 
+/*
 Fonction getBestChipTarget(mode, range, chip)
 Niveau 38
 Opérations variables
 
 Renvoie la meilleure cible à portée [range] sur laquelle utiliser la puce [chip] selon le mode de calcul [mode].
 
-Paramètres : 
+Paramètres :
 
 	- mode : Le mode de calcul ("LESS_RESISTANCE" : La cible qui subira le plus de dégâts
 								"LESS_HEALTH" : La cible avec le moins de vie
 								"DEAD" : La cible qui peut se faire tuer
 	- range : La portée à laquelle analyser les ennemis
 	- chip : La puce à utiliser
-Retour : 
+Retour :
 
 	- Renvoie l'id du poireau à portée [range] sur lequel utiliser la puce [chip] selon la méthode [mode]. Renvoie [null] si aucun poireau ne correspond.
 */
@@ -341,21 +344,21 @@ function getBestChipTarget(mode, range, chip)
 	else return null;
 }
 
-/* 
+/*
 Fonction gestBestWeaponTarget(mode, range, weapon)
 Niveau 38
 Opérations variables
 
 Renvoie la meilleure cible à portée [range] sur laquelle utiliser l'arme [weapon] selon le mode de calcul [mode].
 
-Paramètres : 
+Paramètres :
 
 	- mode : Le mode de calcul ("LESS_RESISTANCE" : La cible qui subira le plus de dégâts
 								"LESS_HEALTH" : La cible avec le moins de vie
 								"DEAD" : La cible qui peut se faire tuer
 	- range : La portée à laquelle analyser les ennemis
 	- weapon : L'arme à utiliser
-Retour : 
+Retour :
 
 	- Renvoie l'id du poireau à portée [range] sur lequel utiliser l'arme [weapon] selon la méthode [mode]. Renvoie [null] si aucun poireau ne correspond.
 */
@@ -371,55 +374,51 @@ function getBestWeaponTarget(mode, range, weapon)
 	else return null;
 }
 
-/* 
+/*
 Fonction autoHeal()
 Niveau 9
 3870 opérations
 
 Utilise vos puces de soin de façon optimale.
 
-Paramètres : 
+Paramètres :
 
-Retour : 
+Retour :
 
 	- Renvoie [0] si une puce de soin a été utilisée. Sinon, [null].
 */
 function autoHeal()
 {
+	// Soin final = (Soin de base) × (1 + Sagesse / 100)
 	var chips = getChips();
 	var tp = getTP();
-	if(inArray(chips, CHIP_BANDAGE))
-		if (getLife() < getTotalLife()) useChip(CHIP_BANDAGE, getLeek());
-	if(inArray(chips, CHIP_CURE))
-		if (getLife() / getTotalLife() * 100 <= 30) useChip(CHIP_CURE, getLeek());
-	if(inArray(chips, CHIP_VACCINE))
-	{
-		if (getLife() / getTotalLife() * 100 < 60) useChip(CHIP_VACCINE, getLeek());
-		if (getCellDistance(getCell(), getCell(getNearestEnemy())) >= getMP() * 3 && getCellDistance(getCell(), getCell(getNearestEnemy())) <= getMP() * 5);
-	}
 	if(inArray(chips, CHIP_REGENERATION))
 	{
 		var chipStats = getChipEffects(CHIP_REGENERATION);
 		var chipHeal = (chipStats[0][1]);
 		if (getLife() + (chipHeal * (1 + getWisdom() / 100)) <= getTotalLife()) useChip(CHIP_REGENERATION, getLeek());
 	}
-	if(inArray(chips, CHIP_ARMORING))
+	if(inArray(chips, CHIP_VACCINE))
 	{
-		if (getLife() / getTotalLife() * 100 <= 35) useChip(CHIP_ARMORING, getLeek());
+		if (getLife() / getTotalLife() * 100 < 60) useChip(CHIP_VACCINE, getLeek());
 	}
+	if(inArray(chips, CHIP_CURE))
+		if (35 * (1 + getWisdom() / 100) <= getTotalLife() - getLife()) useChip(CHIP_CURE, getLeek());
+	if(inArray(chips, CHIP_BANDAGE))
+		if (getLife() < getTotalLife()) useChip(CHIP_BANDAGE, getLeek());
 	return (getTP() < tp) ? 0 : null;
 }
 
-/* 
+/*
 Fonction DDD()
 Niveau 35
 2082 opérations
 
-Déni un défi délibérément 
+Déni un défi délibérément
 
-Paramètres : 
+Paramètres :
 
-Retour : 
+Retour :
 
 */
 function DDD()
@@ -437,19 +436,19 @@ function DDD()
 	}
 }
 
-/* 
+/*
 Fonction useSimpleChip(item, target)
 Niveau 37
 Opérations variables
 
 Utilise une puce [item] de zone point sur la cible [target].
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de la puce à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser la puce
 
-Retour : 
+Retour :
 
 	Renvoie la valeur [state] de useChip(chip, leek). Si il est impossible de lancer la puce, renvoie [-1].
 
@@ -458,7 +457,7 @@ function useSimpleChip(item, target)
 {
 	var state;
 	if (getPathLength(getCell(), getCellToUseChip(item, target)) <= getMP())
-	{	
+	{
 		moveTowardCell(getCellToUseChip(item, target));
 		state = useChip(item, target);
 		return state;
@@ -466,19 +465,19 @@ function useSimpleChip(item, target)
 	else return -1;
 }
 
-/* 
+/*
 Fonction useSimpleWeapon(item, target)
 Niveau 37
 Opérations variables
 
 Utilise une arme [item] de zone point sur la cible [target].
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de l'arme à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser la puce
 
-Retour : 
+Retour :
 
 	Renvoie la valeur [state] de useWeapon(leek). Si il est impossible de tirer, renvoie [-1].
 
@@ -486,10 +485,17 @@ Retour :
 function useSimpleWeapon(item, target)
 {
 	var state;
-	if (getPathLength(getCell(), getCellToUseWeapon(item, target)) <= getMP())
+	var cellsToUseWeapon = getCellsToUseWeapon(item, target);
+	var distance = 400;
+	if (cellsToUseWeapon == null) return -1;
+	for (var i = 0; i < count(cellsToUseWeapon); i++) {
+		var computedDistance = getPathLength(getCell(), cellsToUseWeapon[i]);
+		if (computedDistance < distance) distance = computedDistance;
+	}
+	if (distance <= getMP())
 	{
 		if (getWeapon() != item) setWeapon(item);
-		moveTowardCell(getCellToUseWeapon(item, target));
+		moveTowardCells(cellsToUseWeapon);
 		state = useWeapon(target);
 		return state;
 	}
@@ -497,21 +503,21 @@ function useSimpleWeapon(item, target)
 }
 
 
-/* 
+/*
 Fonction getCellToUseAoEWeapon(item, target, start, mp)
 Niveau 39
 Opérations variables
 
 Renvoie la meilleure cellule sur laquelle utiliser une arme de zone 4.
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de l'arme à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser l'arme en priorité
 	- start : La cellule où se trouve le poireau qui tire
 	- mp : Le nombre de MP dont dispose le tireur
 
-Retour : 
+Retour :
 
 	Renvoie la meilleure cellule [bestCell]. Renvoie [-1] si aucune cellule n'a été trouvée.
 
@@ -528,7 +534,7 @@ function getCellToUseAoEWeapon(item, target, start, mp)
 			for (var leek in targetsAffected)
 			{
 				if (isAlly(leek))
-				{	
+				{
 					score -= 2;
 				}
 				else if (isEnemy(leek))
@@ -547,11 +553,11 @@ function getCellToUseAoEWeapon(item, target, start, mp)
 	var maxScore = 0;
 	for (var cell : var eff in efficiency)
 	{
-			if (efficiency[cell] > maxScore)
-			{
-					maxScore = efficiency[cell];
-					bestCell = cell;
-			}
+		if (efficiency[cell] > maxScore)
+		{
+			maxScore = efficiency[cell];
+			bestCell = cell;
+		}
 	}
 	var pathLength = getPathLength(start, getCellToUseWeaponOnCell(item, getCell(target)));
 	if (pathLength != null && pathLength <= mp)
@@ -560,7 +566,7 @@ function getCellToUseAoEWeapon(item, target, start, mp)
 		for (var leek in targetsAffected)
 		{
 			if (isAlly(leek) && leek != getLeek())
-			{	
+			{
 				score -= 2;
 			}
 			else if (isEnemy(leek))
@@ -573,19 +579,19 @@ function getCellToUseAoEWeapon(item, target, start, mp)
 	return bestCell;
 }
 
-/* 
+/*
 Fonction useAoEWeapon(item, target)
 Niveau 39
 Opérations variables
 
 Utilise une arme de zone 4 au meilleur endroit possible.
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de l'arme à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser l'arme en priorité
 
-Retour : 
+Retour :
 
 	Renvoie l'état [state] de la fonction useWeaponOnCell(cell).
 
@@ -593,35 +599,35 @@ Retour :
 function useAoEWeapon(item, target)
 {
 	if (getCellDistance(getCell(), getCell(target)) <= getWeaponMaxRange(item) + 2 + (getMP()) && getTP() >= getWeaponCost(item))
+	{
+		var state;
+		var bestCell = getCellToUseAoEWeapon(item, target, getCell(), getMP());
+		if (bestCell != -1 && bestCell != null && getTP() >= getWeaponCost(item))
 		{
-			var state;
-			var bestCell = getCellToUseAoEWeapon(item, target, getCell(), getMP());
-			if (bestCell != -1 && bestCell != null && getTP() >= getWeaponCost(item))
-			{
-				moveTowardCell(getCellToUseWeaponOnCell(item, bestCell));
-				if (getWeapon() != item) setWeapon(item);
-				state = useWeaponOnCell(bestCell);
-				return state;
-			}	
-			else return -1;
+			moveTowardCell(getCellToUseWeaponOnCell(item, bestCell));
+			if (getWeapon() != item) setWeapon(item);
+			state = useWeaponOnCell(bestCell);
+			return state;
 		}
+		else return -1;
+	}
 }
 
-/* 
+/*
 Fonction getCellToUseLaserWeapon(item, target, start, mp)
 Niveau 39
 Opérations variables
 
 Renvoie la meilleure cellule sur laquelle utiliser une arme de zone laser.
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de l'arme à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser l'arme en priorité
 	- start : La cellule où se trouve le poireau qui tire
 	- mp : Le nombre de MP dont dispose le tireur
 
-Retour : 
+Retour :
 
 	Renvoie la meilleure cellule [bestCell]. Renvoie [-1] si aucune cellule n'a été trouvée.
 
@@ -640,7 +646,7 @@ function getCellToUseLaserWeapon(item, target, start, mp)
 		for (var leek in targetsAffected)
 		{
 			if (isAlly(leek))
-			{	
+			{
 				score -= 2;
 			}
 			else if (isEnemy(leek))
@@ -658,28 +664,28 @@ function getCellToUseLaserWeapon(item, target, start, mp)
 	var maxScore = 0;
 	for (var cell : var eff in efficiency)
 	{
-			if (efficiency[cell] > maxScore)
-			{
-					maxScore = efficiency[cell];
-					bestCell = cell;
-			}
+		if (efficiency[cell] > maxScore)
+		{
+			maxScore = efficiency[cell];
+			bestCell = cell;
+		}
 	}
 	return bestCell;
 }
 
-/* 
+/*
 Fonction useLaserWeapon(item, target)
 Niveau 39
 Opérations variables
 
 Utilise une arme de zone laser au meilleur endroit possible.
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de l'arme à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser l'arme en priorité
 
-Retour : 
+Retour :
 
 	Renvoie l'état [state] de la fonction useWeaponOnCell(cell).
 
@@ -695,23 +701,23 @@ function useLaserWeapon(item, target)
 			moveTowardCell(getCellToUseWeaponOnCell(bestCell));
 			var state = useWeaponOnCell(bestCell);
 			return state;
-		}	
+		}
 	}
 }
 
-/* 
+/*
 Fonction useAoEChip(item, target)
 Niveau 39
 Opérations variables
 
 Utilise une puce de zone 4 au meilleur endroit possible.
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de la puce à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser la puce en priorité
 
-Retour : 
+Retour :
 
 	Renvoie l'état [state] de la fonction useChipOnCell(cell).
 
@@ -719,34 +725,44 @@ Retour :
 function useAoEChip(item, target)
 {
 	if (getCellDistance(getCell(), getCell(target)) <= getChipMaxRange(item) + 2 + (getMP()) && getTP() >= getChipCost(item))
+	{
+		var state;
+		var bestCell = getCellToUseAoEChip(item, target, getCell(), getMP());
+		if (bestCell != -1 && bestCell != null)
 		{
-			var state;
-			var bestCell = getCellToUseAoEChip(item, target, getCell(), getMP());
-			if (bestCell != -1 && bestCell != null)
-			{
-				moveTowardCell(getCellToUseChipOnCell(item, bestCell));
-				state = useChipOnCell(item, bestCell);
-				return state;
-			}	
-			else return -1;
+			var cells = getCellsToUseChipOnCell(item, bestCell);
+			var cellToMove = 0;
+			for (var i = 0; i < count(cells); i++) {
+				if (cells[i] != bestCell && getPathLength(getCell(), cells[i]) <= getMP() && getPathLength(cells[i], bestCell) >= getChipArea(item) - 2) {
+					cellToMove = cells[i];
+					break;
+				}
+			}
+			debug(getPathLength(getCell(), cellToMove) + ' > ' + getMP());
+			if (getPathLength(getCell(), cellToMove) > getMP() - 1) return -1;
+			moveTowardCell(cellToMove);
+			state = useChipOnCell(item, bestCell);
+			return state;
 		}
+		else return -1;
+	}
 }
 
-/* 
+/*
 Fonction getCellToUseAoEChip(item, target, start, mp)
 Niveau 39
 Opérations variables
 
 Renvoie la meilleure cellule sur laquelle utiliser une puce de zone 4.
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de la puce à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser la puce en priorité
 	- start : La cellule où se trouve le poireau qui utilise la puce
 	- mp : Le nombre de MP dont dispose le lanceur
 
-Retour : 
+Retour :
 
 	Renvoie la meilleure cellule [bestCell]. Renvoie [-1] si aucune cellule n'a été trouvée.
 
@@ -762,9 +778,14 @@ function getCellToUseAoEChip(item, target, start, mp)
 			var targetsAffected = getChipTargets(item, cell2);
 			for (var leek in targetsAffected)
 			{
-				if (isAlly(leek))
-				{	
+				if (leek == getLeek()) {
+					return -1;
+				}
+				else if (isAlly(leek))
+				{
 					score -= 2;
+				} else if (cell2 == getCell(leek) && isEnemy(leek)){
+					score += 2;
 				}
 				else if (isEnemy(leek))
 				{
@@ -782,11 +803,11 @@ function getCellToUseAoEChip(item, target, start, mp)
 	var maxScore = 0;
 	for (var cell : var eff in efficiency)
 	{
-			if (efficiency[cell] > maxScore)
-			{
-					maxScore = efficiency[cell];
-					bestCell = cell;
-			}
+		if (efficiency[cell] > maxScore)
+		{
+			maxScore = efficiency[cell];
+			bestCell = cell;
+		}
 	}
 	var pathLength = getPathLength(getCell(), getCellToUseChipOnCell(item, getCell(target)));
 	if (pathLength != null && pathLength <= mp)
@@ -795,7 +816,7 @@ function getCellToUseAoEChip(item, target, start, mp)
 		for (var leek in targetsAffected)
 		{
 			if (isAlly(leek) && leek != getLeek())
-			{	
+			{
 				score -= 2;
 			}
 			else if (isEnemy(leek))
@@ -808,19 +829,19 @@ function getCellToUseAoEChip(item, target, start, mp)
 	return bestCell;
 }
 
-/* 
+/*
 Fonction use(item, target)
 Niveau 39
 Opérations variables
 
 Utilise un objet [item] sur une cible [target].
 
-Paramètres : 
-	
+Paramètres :
+
 	- item : L'id de l'objet à utiliser
 	- target : L'id de l'ennemi sur lequel utiliser l'objet
 
-Retour : 
+Retour :
 
 */
 function use(item, target)
@@ -838,18 +859,18 @@ function use(item, target)
 	}
 }
 
-/* 
+/*
 Fonction getMaxEnemyRange(target)
 Niveau 57
 Opérations variables
 
 Renvoie la portée maximale à laquelle l'ennemi [target] peut vous faire du mal.
 
-Paramètres : 
-	
+Paramètres :
+
 	- target : L'id de l'ennemi
 
-Retour : 
+Retour :
 
 	- Renvoie la portée maximale [maxRange]. Renvoie [0] si l'ennemi ne possède rien qui puisse vous faire du mal.
 */
@@ -882,17 +903,17 @@ function getMaxEnemyRange(target)
 	return maxRange;
 }
 
-/* 
+/*
 Fonction getCellsToHide()
 Niveau 57
 Opérations variables
 
 Renvoie un tableau contenant les cellules disponibles pour se cacher de l'ennemi le plus proche.
 
-Paramètres : 
-	
+Paramètres :
 
-Retour : 
+
+Retour :
 
 	- Renvoie un tableau [cellsToHide] contenant les cellules pour se cacher.
 */
@@ -907,7 +928,7 @@ function getCellsToHide()
 		var safe = true;
 		for (var cell2 : var distance2 in enemyCellsToGo)
 		{
-			if (lineOfSight(cell, cell2, (getAliveAllies() + getAliveEnemies())) && getCellDistance(cell, cell2) <= enemyMaxRange) 
+			if (lineOfSight(cell, cell2, (getAliveAllies() + getAliveEnemies())) && getCellDistance(cell, cell2) <= enemyMaxRange)
 			{
 				safe = false;
 				break;
@@ -923,8 +944,172 @@ function getCellsToUseWeaponFrom(weapon, cell, leek)
 	var cells = [];
 	for (var i = 0; i < 613; i++)
 	{
-		if (getDistance(cell, i) <= getWeaponMaxRange(weapon) && lineOfSight(cell, i, leek))
+		if (getPathLength(cell, i) + 1 <= getWeaponMaxRange(weapon) && lineOfSight(cell, i, leek))
 			push(cells, i);
 	}
 	return cells;
+}
+
+function canUseWeaponFromCell(weapon, cell, availableCells) {
+	if (isInlineWeapon(weapon)) {
+		for (var i = 0; i < count(availableCells); i++) {
+			var distance = getPathLength(cell, availableCells[i]);
+			if (lineOfSight(availableCells[i], cell) && distance <= getWeaponMaxRange(weapon) && isOnSameLine(availableCells[i], cell)) {
+				return true;
+			}
+		}
+	} else {
+		for (var i = 0; i < count(availableCells); i++) {
+			var distance = getPathLength(cell, availableCells[i]);
+			if (lineOfSight(availableCells[i], cell) && distance <= getWeaponMaxRange(weapon)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function isAoEChip(chip) {
+	var chipArea = getChipArea(chip);
+	var isChipAoe = false;
+	if (chipArea >= 3 && chipArea <= 5) return true;
+	return false;
+}
+
+function canUseChipFromCell(chip, cell, availableCells, leek) {
+	var isChipAoe = isAoEChip(chip);
+	var cellToUseAoEChip = 0;
+	if (isChipAoe) cellToUseAoEChip = getCellToUseAoEChip(chip,  getLeekOnCell(cell),  getCell(leek),  getMP(leek));
+	if (isInlineChip(chip)) {
+		for (var i = 0; i < count(availableCells); i++) {
+			var distance = getPathLength(cell, availableCells[i]);
+			if (isChipAoe && availableCells[i] == cellToUseAoEChip) return true;
+			if (lineOfSight(availableCells[i], cell) && distance <= getChipMaxRange(chip) && isOnSameLine(availableCells[i], cell)) {
+				return true;
+			}
+		}
+	}
+	for (var i = 0; i < count(availableCells); i++) {
+		var distance = getPathLength(cell, availableCells[i]);
+		if (chipNeedLos(chip)) {
+			if (lineOfSight(availableCells[i], cell) && distance <= getChipMaxRange(chip)) {
+				return true;
+			}
+		} else {
+			if (distance <= getChipMaxRange(chip)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function getCellsToUseChipFrom(chip, cell, leek)
+{
+	var cells = [];
+	for (var i = 0; i < 613; i++)
+	{
+		if (getPathLength(cell, i) + 1 <= getChipMaxRange(chip) && lineOfSight(cell, i, leek))
+			push(cells, i);
+	}
+	return cells;
+}
+
+function hasChip(leek, chip) {
+	var leekChips = getChips(leek);
+	if (leekChips != null) {
+		for (var i = 0; i < count(leekChips); i++)
+			if (leekChips[i] == chip) return true;
+	}
+	return false;
+}
+
+/**
+ * Returns an array of reachable cells from a cell with a number of movement points. It won't send cells that contains
+ * leeks or obstacles.
+ * Opérations variables.
+ *
+ * @param myCell cell from where to find reachable cells.
+ * @param myMP the number of movement points that can be used.
+ * @returns {[]} An array of reachable cells from a cell with a number of movement points.
+ */
+function getMoves(myCell, myMP)
+{
+	var area = getArea(myCell, myMP);
+	var availableCells = [];
+	for (var cell : var distance in area) {
+		push(availableCells, cell);
+	}
+	return (availableCells);
+}
+
+function sayShit()
+{
+	var punchlines = ["Ne me fais pas poireauter !",
+		"Fais pas ton coeur de poireau !",
+		"Ne tombe pas dans les poireaux !",
+		"Ton IA me fend le poireau !",
+		"Tu ne vaux même pas un poireau !",
+		"Les poireaux sont cuits !", //5
+		"Un poireau, ça se combat !",
+		"Être un poireau est un combat !",
+		"Le poireau est le légume du combat !",
+		"Qui combat Kaikina sera vaincu !",
+		"L'art est avant tout un combat de poireaux !", //10
+		"La civilisation combat la bêtise, mais cultive les poireaux !",
+		"Là où le combat est grand, le poireau l'est aussi !",
+		"Qui combat trop le poireau, devient poireau lui-même !",
+		"Le poireau qui s'enfuit du combat, est un poireau qui peut resservir !",
+		"Un poireau qui atteint la sérénité est un poireau qui a fui le combat !", //15
+		"Le poireau combat et c'est le farmer qui porte les galons !",
+		"Le seul vrai combat d'un poireau l'oppose à sa lâcheté !",
+		"L'art de la guerre c'est de soumettre le poireau sans combat !",
+		"Si ce sont toujours les meilleurs qui partent en premier, pourquoi suis-je toujours là ?", //20
+		"Je ne cautionne pas la chirurgie végétale, mais dans ton cas, fonce !",
+		"Pourquoi tu ne te glisserais pas dans quelque chose de plus confortable ? Comme un état végétatif par exemple ?",
+		"Dis-moi, être un mauvais développeur est une profession ou c'est naturel chez toi ?",
+		"Si je dis quelque chose qui t'offense, dis-le moi, comme ça je pourrai te le redire !",
+		"Pas besoin d'insultes, ton poireau en dit long !", //25
+		"Les leekzombies mangent les IAs, tu es sain et sauf !",
+		"Quand je regarde mon IA, je me trouve mauvais. Mais quand je vois ton poireau, je me sens chanceux !",
+		"Tout le monde à le droit d'avoir une mauvaise IA, mais tu abuses de ce privilège !",
+		"Qu'est-ce que serait une bonne IA sans des mauvaises ? Tu vois à quel point t'es important !",
+		"Puis-je t'emprunter ton IA pour montrer l'exemple à ne pas suivre ?",
+		"Une IA c'est bien, tu devrais essayer d'en avoir une !",
+		"J'essaye de t'imaginer avec une bonne IA !"];
+	var i =randInt(0, count(punchlines));
+	say(punchlines[i]);
+}
+
+function sayFinisher()
+{
+	var punchlines = ["Et le combat cessa, faute de poireaux.",
+		"Quand on a raté son IA, on essaye au moins de réussir sa mort.",
+		"Ne combat jamais un poireau qui n'a rien à perdre.",
+		"Ce n'est pas mon IA qui est meilleure, c'est juste que la tienne est plus mauvaise que les autres !",
+		"Une mauvaise IA n'est pas un crime, tu es libre de partir !",
+		"Wow je suis impressionné du temps que tu as pu vivre sans IA !",
+		"OMAE WA MOU SHINDEIRU !",
+		"J'ai terminé la récolte !'"]; //4
+	var i = randInt(0, count(punchlines));
+	say(punchlines[i]);
+}
+
+function getLeekMaxRange(leek, chipsToIgnore) {
+	var chips = getChips(leek);
+	var weapons = getWeapons(leek);
+	var maxRange = 0;
+	for (var i = 0; i < count(chips); i++) {
+		var chipRange = getChipMaxRange(chips[i]);
+		if (!inArray(chipsToIgnore, chips[i]) && chipRange > maxRange) {
+			maxRange = chipRange;
+		}
+	}
+	for (var i = 0; i < count(weapons); i++) {
+		var weaponRange = getWeaponMaxRange(weapons[i]);
+		if (weaponRange > maxRange) {
+			maxRange = weaponRange;
+		}
+	}
+	return maxRange;
 }
