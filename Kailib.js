@@ -2,18 +2,15 @@ include("CasesAccessibles");
 
 /**
  * Returns if the usage of a chip on a leek will kill it.
- * 283 operations.
+ * 296 operations.
  *
  * @param chip that will be used.
  * @param leek to use the chip on.
  * @returns {boolean} that will be true if the chip will kill the leek.
  */
-function chipWillKill(chip, leek)
+function chipWillKill(chip, leek, strictMode)
 {
-	var chipStats = getChipEffects(chip);
-	var chipDamage = (chipStats[0][1] + chipStats[0][2]) / 2;
-	return (chipDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(leek) / 100) - getAbsoluteShield(leek)
-		>= getLife(leek);
+	return calcChipDamages(chip, leek, strictMode) > getLife(leek);
 }
 
 /*
@@ -32,11 +29,15 @@ Retour :
 
 	- Renvoie [true] si le poireau [enemy] est tuable avec l'arme [weapon]. Renvoie [false] dans le cas contraire.
 */
-function weaponWillKill(weapon, enemy)
+/**
+ * Returns if the usage of a weapon on a leek will kill it.
+ * @param weapon that will be used.
+ * @param leek to use the weapon on.
+ * @returns {boolean} that will be true if the weapon will kill the leek.
+ */
+function weaponWillKill(weapon, leek)
 {
-	var damages = calcWeaponDamages(weapon,  enemy);
-	if (damages > getLife(enemy)) return true;
-	else return false;
+	return calcWeaponDamages(weapon,  leek) > getLife(leek);
 }
 
 /*
@@ -152,10 +153,15 @@ Retour :
 
 	- Renvoie le montant de dégâts que peut occasionner la puce arrondi au plus proche sur une moyenne de dégâts.
 */
-function calcChipDamages(chip, enemy)
+function calcChipDamages(chip, enemy, strictMode)
 {
 	var chipStats = getChipEffects(chip);
-	var chipDamage = (chipStats[0][2] + chipStats[0][1]) / 2;
+	var chipDamage = 0;
+	if (strictMode) {
+		chipDamage = chipStats[0][1];
+	} else {
+		chipDamage = (chipStats[0][2] + chipStats[0][1]) / 2;
+	}
 	return (round(chipDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy));
 }
 
@@ -211,10 +217,10 @@ function getLessResistanceTarget(enemies, idDamages)
 		var target = null;
 		for (var enemy in enemies)
 		{
-			if (calcChipDamages(chip, enemy) > damageTaken && !isSummon(target))
+			if (calcChipDamages(chip, enemy, false) > damageTaken && !isSummon(target))
 			{
 				target = enemy;
-				damageTaken = calcChipDamages(chip, enemy);
+				damageTaken = calcChipDamages(chip, enemy, false);
 			}
 		}
 		return target;
@@ -290,7 +296,7 @@ function getDeadTarget(enemies, idDamages)
 		var chip = idDamages;
 		for (var enemy in enemies)
 		{
-			if (chipWillKill(chip, enemy) && !isSummon(enemy)) return enemy;
+			if (chipWillKill(chip, enemy, false) && !isSummon(enemy)) return enemy;
 			else return null;
 		}
 	}
@@ -1029,8 +1035,8 @@ function getMoves(cell, mp)
 {
 	var area = getArea(cell, mp);
 	var availableCells = [];
-	for (var cell : var distance in area) {
-		push(availableCells, cell);
+	for (var cell1 : var distance in area) {
+		push(availableCells, cell1);
 	}
 	return (availableCells);
 }
