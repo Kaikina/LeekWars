@@ -2,7 +2,7 @@ include("CasesAccessibles");
 
 /**
  * Returns if the usage of a chip on a leek will kill it.
- * 296 operations.
+ * Opérations variables.
  *
  * @param chip that will be used.
  * @param leek to use the chip on.
@@ -13,57 +13,38 @@ function chipWillKill(chip, leek, strictMode)
 	return calcChipDamages(chip, leek, strictMode) > getLife(leek);
 }
 
-/*
-Fonction weaponWillKill(weapon, enemy)
-Niveau 38
-307 opérations
-
-Renvoie si l'arme [weapon] peut tuer l'ennemi [enemy].
-
-Paramètres :
-
-	- weapon : L'id de l'arme à utiliser
-	- enemy : L'id du leek sur lequel utiliser l'arme
-
-Retour :
-
-	- Renvoie [true] si le poireau [enemy] est tuable avec l'arme [weapon]. Renvoie [false] dans le cas contraire.
-*/
 /**
  * Returns if the usage of a weapon on a leek will kill it.
+ * Opérations variables.
+ *
  * @param weapon that will be used.
  * @param leek to use the weapon on.
  * @returns {boolean} that will be true if the weapon will kill the leek.
  */
-function weaponWillKill(weapon, leek)
+function weaponWillKill(weapon, leek, strictMode)
 {
-	return calcWeaponDamages(weapon,  leek) > getLife(leek);
+	return calcWeaponDamages(weapon,  leek, strictMode) > getLife(leek);
 }
 
-/*
-Fonction getEnemiesInRange(range, from) : enemiesInRange
-Niveau 16
-Opérations variables
-
-Renvoie un tableau contenant les ennemis à portée [range] de la cellule [from].
-
-Paramètres :
-
-	- range : La portée sur laquelle vérifier la présence d'ennemis exprimée en nombre de cellules
-	- from : L'id de la cellule à partir de laquelle vérifier la présence d'ennemis
-
-Retour :
-
-	- enemiesInRange : Un tableau contenant la liste des id des ennemis se situant à portée [range] de la cellule [from]. Renvoie [null] si aucun résultat n'a été trouvé.
-*/
-function getEnemiesInRange(range, from)
+/**
+ * Returns an array of all enemies in range from a cell.
+ * Opérations variables.
+ *
+ * @param range in which to search enemies.
+ * @param cell from where to search enemies.
+ * @returns {null|[]} if no enemies found or an array of all enemies found.
+ */
+function getEnemiesInRange(range, cell)
 {
 	var enemiesInRange = [];
 	for (var enemy in getAliveEnemies())
-		if (getCellDistance(getCell(enemy), from) <= range) push(enemiesInRange, enemy);
-	if (!isEmpty(enemiesInRange))
+		if (getCellDistance(getCell(enemy), cell) <= range) {
+			push(enemiesInRange, enemy);
+		}
+	if (!isEmpty(enemiesInRange)) {
 		return (enemiesInRange);
-	else return (enemiesInRange = null);
+	}
+	return null;
 }
 
 /*
@@ -181,10 +162,15 @@ Retour :
 
 	- Renvoie le montant de dégâts que peut occasionner l'arme arrondi au plus proche sur une moyenne de dégâts.
 */
-function calcWeaponDamages(weapon, enemy)
+function calcWeaponDamages(weapon, enemy, strictMode)
 {
 	var weaponStats = getWeaponEffects(weapon);
-	var weaponDamage = (weaponStats[0][2] + weaponStats[0][1]) / 2;
+	var weaponDamage = 0;
+	if (strictMode) {
+		weaponDamage = weaponStats[0][1];
+	} else {
+		weaponDamage = (weaponStats[0][2] + weaponStats[0][1]) / 2;
+	}
 	var totalDamages = 0;
 	for (var i = 0; i < count(weaponStats); i++) {
 		totalDamages += round((weaponStats[i][1] + weaponStats[i][2]) / 2 * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy);
@@ -232,10 +218,10 @@ function getLessResistanceTarget(enemies, idDamages)
 		var target = null;
 		for (var enemy in enemies)
 		{
-			if (calcWeaponDamages(weapon, enemy) > damageTaken && !isSummon(target))
+			if (calcWeaponDamages(weapon, enemy, false) > damageTaken && !isSummon(target))
 			{
 				target = enemy;
-				damageTaken = calcWeaponDamages(weapon, enemy);
+				damageTaken = calcWeaponDamages(weapon, enemy, false);
 			}
 		}
 		return target;
@@ -305,7 +291,7 @@ function getDeadTarget(enemies, idDamages)
 		var weapon = idDamages;
 		for (var enemy in enemies)
 		{
-			if (weaponWillKill(weapon, enemy) && !isSummon(enemy)) return enemy;
+			if (weaponWillKill(weapon, enemy, false) && !isSummon(enemy)) return enemy;
 			else return null;
 		}
 	}
