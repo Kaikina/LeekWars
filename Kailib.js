@@ -147,39 +147,27 @@ function getLessHealthLeek(leeks)
 	return target;
 }
 
-/*
-Fonction getDeadTarget(enemies, idDamages)
-Niveau 1
-Opérations variables
-
-Renvoie la cible parmis les ennemis [enemies] qui sera tuée en utilisant l'objet [idDamages].
-
-Paramètres :
-
-	- enemies : Un tableau contenant les id des ennemis
-	- idDamages : L'id de l'objet dont provient les dégâts
-
-Retour :
-
-	- Renvoi la cible [enemy] qui sera tué. Renvoie [null] si aucun ennemi ne peut être tué.
-*/
-function getDeadTarget(enemies, idDamages)
+/**
+ * Returns a leek from an array of leeks that can be killed by an item.
+ * @param enemies to analyze.
+ * @param item that will be used to hit.
+ * @returns {number|null} the id of the leek that can die.
+ */
+function getDeadTarget(enemies, item, strictMode)
 {
-	if (isChip(idDamages))
+	if (isChip(item))
 	{
-		var chip = idDamages;
 		for (var enemy in enemies)
 		{
-			if (chipWillKill(chip, enemy, false) && !isSummon(enemy)) return enemy;
+			if (chipWillKill(item, enemy, strictMode) && !isSummon(enemy)) return enemy;
 			else return null;
 		}
 	}
-	else if (isWeapon(idDamages))
+	else if (isWeapon(item))
 	{
-		var weapon = idDamages;
 		for (var enemy in enemies)
 		{
-			if (weaponWillKill(weapon, enemy, false) && !isSummon(enemy)) return enemy;
+			if (weaponWillKill(item, enemy, strictMode) && !isSummon(enemy)) return enemy;
 			else return null;
 		}
 	}
@@ -850,8 +838,8 @@ function getMoves(cell, mp)
 	var area = getArea(cell, mp);
 	var availableCells = [];
 	for (var cell1 : var distance in area) {
-		push(availableCells, cell1);
-	}
+	push(availableCells, cell1);
+}
 	return (availableCells);
 }
 
