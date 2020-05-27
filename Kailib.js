@@ -23,7 +23,7 @@ function chipWillKill(chip, leek, strictMode)
  */
 function weaponWillKill(weapon, leek, strictMode)
 {
-	return calcWeaponDamages(weapon,  leek, strictMode) > getLife(leek);
+	return getWeaponDamages(weapon,  leek, strictMode) > getLife(leek);
 }
 
 /**
@@ -100,114 +100,48 @@ function getChipDamages(chip, leek, strictMode)
 		(1 - getRelativeShield(leek) / 100) - getAbsoluteShield(leek));
 }
 
-/*
-Fonction calcWeaponDamages(weapon, enemy)
-Niveau 38
-313 opérations
-
-Renvoie le nombre de dégâts que peut occasionner l'arme [weapon] sur l'ennemi [enemy].
-
-Paramètres :
-
-	- weapon : L'id de l'arme
-	- enemy : L'id du poireau
-
-Retour :
-
-	- Renvoie le montant de dégâts que peut occasionner l'arme arrondi au plus proche sur une moyenne de dégâts.
-*/
-function calcWeaponDamages(weapon, enemy, strictMode)
+/**
+ * Returns the damages that a weapon can make on a leek.
+ * Opérations variables.
+ *
+ * @param weapon to use.
+ * @param leek to target.
+ * @param strictMode true to get the minimum damages it will do.
+ * @returns {number} the damages that will cause the weapon on the leek.
+ */
+function getWeaponDamages(weapon, leek, strictMode)
 {
 	var weaponStats = getWeaponEffects(weapon);
-	var weaponDamage = 0;
+	var weaponDamages = 0;
 	if (strictMode) {
-		weaponDamage = weaponStats[0][1];
+		weaponDamages = weaponStats[0][1];
 	} else {
-		weaponDamage = (weaponStats[0][2] + weaponStats[0][1]) / 2;
+		weaponDamages = (weaponStats[0][2] + weaponStats[0][1]) / 2;
 	}
 	var totalDamages = 0;
 	for (var i = 0; i < count(weaponStats); i++) {
-		totalDamages += round((weaponStats[i][1] + weaponStats[i][2]) / 2 * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy);
+		totalDamages += round(weaponDamages * (1 + getStrength() / 100)) * (1 - getRelativeShield(leek) / 100) - getAbsoluteShield(leek);
 	}
 	return totalDamages;
 }
 
-/*
-Fonction getLessResistanceTarget(enemies, idDamages)
-Niveau 38
-Opérations variables
-
-Renvoie la cible la moins résistante parmis les ennemis [enemies] avec l'objet [idDamages].
-
-Paramètres :
-
-	- enemies : Un tableau contenant les id des ennemis
-	- idDamages : L'id de l'objet dont provient les dégâts
-
-Retour :
-
-	- Renvoi la cible [target] la moins résistante. Renvoie [null] si aucune cible n'est trouvée. Renvoie [null] si l'objet [idDamages] passé en paramètre est incorrect.
-*/
-function getLessResistanceTarget(enemies, idDamages)
-{
-	if (isChip(idDamages))
-	{
-		var chip = idDamages;
-		var damageTaken = 0;
-		var target = null;
-		for (var enemy in enemies)
-		{
-			if (getChipDamages(chip, enemy, false) > damageTaken && !isSummon(target))
-			{
-				target = enemy;
-				damageTaken = getChipDamages(chip, enemy, false);
-			}
-		}
-		return target;
-	}
-	else if (isWeapon(idDamages))
-	{
-		var weapon = idDamages;
-		var damageTaken = 0;
-		var target = null;
-		for (var enemy in enemies)
-		{
-			if (calcWeaponDamages(weapon, enemy, false) > damageTaken && !isSummon(target))
-			{
-				target = enemy;
-				damageTaken = calcWeaponDamages(weapon, enemy, false);
-			}
-		}
-		return target;
-	}
-	else return null;
-}
-
-/*
-Fonction getLessHealthTarget(enemies)
-Niveau 1
-Opérations variables
-
-Renvoie la cible avec le moins de vie parmis les enemis [enemies].
-
-Paramètres :
-
-	- enemies : Un tableau contenant les id des ennemis
-
-Retour :
-
-	- Renvoi la cible [target] avec le moins de vie. Renvoie [null] si aucune cible n'est trouvée.
-*/
-function getLessHealthTarget(enemies)
+/**
+ * Return the leek that has the less health.
+ * Opérations variables.
+ *
+ * @param leeks to analyze.
+ * @returns {null|number} the leek that has the less health.
+ */
+function getLessHealthLeek(leeks)
 {
 	var lessHealth = 9999;
 	var target = null;
-	for (var enemy in enemies)
+	for (var leek in leeks)
 	{
-		if (getLife(enemy) < lessHealth && !isSummon(enemy))
+		if (getLife(leek) < lessHealth && !isSummon(leek))
 		{
-			target = enemy;
-			lessHealth = getLife(enemy);
+			target = leek;
+			lessHealth = getLife(leek);
 		}
 	}
 	return target;
@@ -248,66 +182,6 @@ function getDeadTarget(enemies, idDamages)
 			if (weaponWillKill(weapon, enemy, false) && !isSummon(enemy)) return enemy;
 			else return null;
 		}
-	}
-	else return null;
-}
-
-/*
-Fonction getBestChipTarget(mode, range, chip)
-Niveau 38
-Opérations variables
-
-Renvoie la meilleure cible à portée [range] sur laquelle utiliser la puce [chip] selon le mode de calcul [mode].
-
-Paramètres :
-
-	- mode : Le mode de calcul ("LESS_RESISTANCE" : La cible qui subira le plus de dégâts
-								"LESS_HEALTH" : La cible avec le moins de vie
-								"DEAD" : La cible qui peut se faire tuer
-	- range : La portée à laquelle analyser les ennemis
-	- chip : La puce à utiliser
-Retour :
-
-	- Renvoie l'id du poireau à portée [range] sur lequel utiliser la puce [chip] selon la méthode [mode]. Renvoie [null] si aucun poireau ne correspond.
-*/
-function getBestChipTarget(mode, range, chip)
-{
-	var enemies = getEnemiesInRange(range, getCell(getLeek()));
-	if (enemies != null)
-	{
-		if (mode == "LESS_RESISTANCE") return getLessResistanceTarget(enemies, chip);
-		if (mode == "LESS_HEALTH") return getLessHealthTarget(enemies);
-		if (mode == "DEAD") return getDeadTarget(enemies, chip);
-	}
-	else return null;
-}
-
-/*
-Fonction gestBestWeaponTarget(mode, range, weapon)
-Niveau 38
-Opérations variables
-
-Renvoie la meilleure cible à portée [range] sur laquelle utiliser l'arme [weapon] selon le mode de calcul [mode].
-
-Paramètres :
-
-	- mode : Le mode de calcul ("LESS_RESISTANCE" : La cible qui subira le plus de dégâts
-								"LESS_HEALTH" : La cible avec le moins de vie
-								"DEAD" : La cible qui peut se faire tuer
-	- range : La portée à laquelle analyser les ennemis
-	- weapon : L'arme à utiliser
-Retour :
-
-	- Renvoie l'id du poireau à portée [range] sur lequel utiliser l'arme [weapon] selon la méthode [mode]. Renvoie [null] si aucun poireau ne correspond.
-*/
-function getBestWeaponTarget(mode, range, weapon)
-{
-	var enemies = getEnemiesInRange(range, getCell(getLeek()));
-	if (enemies != null)
-	{
-		if (mode == "LESS_RESISTANCE") return getLessResistanceTarget(enemies, weapon);
-		if (mode == "LESS_HEALTH") return getLessHealthTarget(enemies);
-		if (mode == "DEAD") return getDeadTarget(enemies, weapon);
 	}
 	else return null;
 }
