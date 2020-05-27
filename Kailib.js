@@ -10,7 +10,7 @@ include("CasesAccessibles");
  */
 function chipWillKill(chip, leek, strictMode)
 {
-	return calcChipDamages(chip, leek, strictMode) > getLife(leek);
+	return getChipDamages(chip, leek, strictMode) > getLife(leek);
 }
 
 /**
@@ -32,7 +32,7 @@ function weaponWillKill(weapon, leek, strictMode)
  *
  * @param range in which to search enemies.
  * @param cell from where to search enemies.
- * @returns {null|[]} if no enemies found or an array of all enemies found.
+ * @returns {[]} if no enemies found or an array of all enemies found.
  */
 function getEnemiesInRange(range, cell)
 {
@@ -41,109 +41,63 @@ function getEnemiesInRange(range, cell)
 		if (getCellDistance(getCell(enemy), cell) <= range) {
 			push(enemiesInRange, enemy);
 		}
-	if (!isEmpty(enemiesInRange)) {
-		return (enemiesInRange);
-	}
-	return null;
+	return enemiesInRange;
 }
 
-/*
-Fonction getAlliesInRange(range, from) : alliesInRange
-Niveau 16
-Opérations variables
-
-Renvoie un tableau contenant les alliés à portée [range] de la cellule [from].
-
-Paramètres :
-
-	- range : La portée sur laquelle vérifier la présence d'alliés exprimée en nombre de cellules
-	- from : L'id de la cellule à partir de laquelle vérifier la présence d'alliés
-
-Retour :
-
-	- alliesInRange : Un tableau contenant la liste des id des alliés se situant à portée [range] de la cellule [from]. Renvoie [null] si aucun résultat n'a été trouvé.
-*/
-function getAlliesInRange(range, from)
+/**
+ * Returns an array of all allies in range from a cell.
+ * Opérations variables.
+ *
+ * @param range in which to search allies.
+ * @param cell from where to search enemies.
+ * @returns {[]}
+ */
+function getAlliesInRange(range, cell)
 {
 	var alliesInRange = [];
 	for (var ally in getAliveAllies())
-		if (getCellDistance(getCell(ally), from) <= range) push(alliesInRange, ally);
-	if (!isEmpty(alliesInRange))
-		return (alliesInRange);
-	else return (alliesInRange = null);
-}
-/*
-Fonction unitHasEffect(unit)
-Niveau 61
-25 opérations
-
-Renvoie si l'entité [unit] possède des effets.
-
-Paramètres :
-
-	- unit : L'id de l'entité
-
-Retour :
-
-	- Renvoie [true] si l'entité possède des effets, si non [false].
-*/
-function unitHasEffect(unit)
-{
-	if (getEffects(unit) != []) return true;
-	else return false;
+		if (getCellDistance(getCell(ally), cell) <= range) push(alliesInRange, ally);
+	return alliesInRange;
 }
 
-/*
-Fonction unitHasEffectOfType(unit, effectType)
-Niveau 61
-26 opérations
-
-Renvoie si l'entité [unit] possède des effets de type [effectType].
-
-Paramètres :
-
-	- unit : L'id de l'entité
-	- effectType : L'id de l'effet
-
-Retour :
-
-	- Renvoie [true] si l'entité possède des effets de type [effectType], si non [false].
-*/
-function unitHasEffectOfType(unit, effectType)
+/**
+ * Returns if a unit has an effect of a type.
+ * Opérations variables.
+ *
+ * @param leek to check.
+ * @param effectType to find.
+ * @returns {boolean} if the leek has an effect of the type.
+ */
+function leekHasEffect(leek, effectType)
 {
-	for (var effect in getEffects(unit))
-	{
-		if (effect[0] == effectType) return true;
-		else return false;
+	for (var effect in getEffects(leek)) {
+		if (effect[0] === effectType) {
+			return true;
+		}
 	}
+	return false;
 }
 
-/*
-Fonction calcChipDamages(chip, enemy)
-Niveau 38
-313 opérations
-
-Renvoie le nombre de dégâts que peut occasionner la puce [chip] sur l'ennemi [enemy].
-
-Paramètres :
-
-	- chip : L'id de la puce
-	- enemy : L'id du poireau
-
-Retour :
-
-	- Renvoie le montant de dégâts que peut occasionner la puce arrondi au plus proche sur une moyenne de dégâts.
-*/
-function calcChipDamages(chip, enemy, strictMode)
+/**
+ * Returns the damages that a chip can make on a leek.
+ * Opérations variables.
+ *
+ * @param chip to use.
+ * @param leek to target.
+ * @param strictMode true to get the minimum damages it will do.
+ * @returns {number} the damages that will cause the chip to the leek.
+ */
+function getChipDamages(chip, leek, strictMode)
 {
 	var chipStats = getChipEffects(chip);
-	var chipDamage = 0;
+	var chipDamages = 0;
 	if (strictMode) {
-		chipDamage = chipStats[0][1];
+		chipDamages = chipStats[0][1];
 	} else {
-		chipDamage = (chipStats[0][2] + chipStats[0][1]) / 2;
+		chipDamages = (chipStats[0][2] + chipStats[0][1]) / 2;
 	}
-	return (round(chipDamage * (1 + getStrength() / 100)) * (1 - getRelativeShield(enemy) / 100) - getAbsoluteShield(enemy));
+	return (round(chipDamages * (1 + getStrength() / 100)) *
+		(1 - getRelativeShield(leek) / 100) - getAbsoluteShield(leek));
 }
 
 /*
@@ -203,10 +157,10 @@ function getLessResistanceTarget(enemies, idDamages)
 		var target = null;
 		for (var enemy in enemies)
 		{
-			if (calcChipDamages(chip, enemy, false) > damageTaken && !isSummon(target))
+			if (getChipDamages(chip, enemy, false) > damageTaken && !isSummon(target))
 			{
 				target = enemy;
-				damageTaken = calcChipDamages(chip, enemy, false);
+				damageTaken = getChipDamages(chip, enemy, false);
 			}
 		}
 		return target;
