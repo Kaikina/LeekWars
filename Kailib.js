@@ -719,16 +719,24 @@ Retour :
 */
 function getCellsToHide()
 {
-	var cellsToGo = getArea(getCell(), getMP()); //On récupère les cellules accessibles
-	var enemyCellsToGo = getArea(getCell(getNearestEnemy()), getMP(getNearestEnemy())); //On récupère les cellules accessibles de l'ennemi
+	var cellsToGo = getArea(getCell(), getMP());
+	var enemies = getAliveEnemies();//On récupère les cellules accessibles
+	var closestEnemy = 0;
+	var enemyDistance = 400;
+	for (var i = 0; i < count(enemies); i++) {
+		if (!isSummon(enemies[i]) && getPathLength(getCell(), getCell(enemies[i])) < enemyDistance) {
+			closestEnemy = enemies[i];
+		}
+	}
+	var enemyCellsToGo = getArea(getCell(closestEnemy), getMP(closestEnemy)); //On récupère les cellules accessibles de l'ennemi
 	var cellsToHide = [];
-	var enemyMaxRange = getMaxEnemyRange(getNearestEnemy());
+	var enemyMaxRange = getMaxEnemyRange(closestEnemy);
 	for (var cell : var distance in cellsToGo) //On insère dans le tableau cellsToHide les cellules où l'on peut se cacher
 	{
 		var safe = true;
 		for (var cell2 : var distance2 in enemyCellsToGo)
 		{
-			if (lineOfSight(cell, cell2, (getAliveAllies() + getAliveEnemies())) && getCellDistance(cell, cell2) <= enemyMaxRange)
+			if (lineOfSight(cell, cell2, getAliveEnemies()) && getCellDistance(cell, cell2) <= enemyMaxRange)
 			{
 				safe = false;
 				break;
