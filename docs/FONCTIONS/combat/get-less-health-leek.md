@@ -14,7 +14,10 @@ getLessHealthLeek(leeks);
     * leek : L'id du poireau ayant le moins de vie.
     
     __Opérations variables__
-    
+
+!!! warning "À savoir"
+    Les invocations sont ignorées dans le calcul.
+
 !!! example "Exemple d'utilisation"
     Vous pouvez récupérer l'allié qui a le moins de vie afin de le soigner en priorité.
     
