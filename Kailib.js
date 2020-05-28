@@ -149,6 +149,8 @@ function getLessHealthLeek(leeks)
 
 /**
  * Returns a leek from an array of leeks that can be killed by an item.
+ * Opérations variables.
+ *
  * @param enemies to analyze.
  * @param item that will be used to hit.
  * @returns {number|null} the id of the leek that can die.
@@ -174,19 +176,12 @@ function getDeadTarget(enemies, item, strictMode)
 	else return null;
 }
 
-/*
-Fonction autoHeal()
-Niveau 9
-3870 opérations
-
-Utilise vos puces de soin de façon optimale.
-
-Paramètres :
-
-Retour :
-
-	- Renvoie [0] si une puce de soin a été utilisée. Sinon, [null].
-*/
+/**
+ * Heals yourself.
+ * Opérations variables.
+ *
+ * @returns {number|null} 0 if a heal has been done.
+ */
 function autoHeal()
 {
 	// Soin final = (Soin de base) × (1 + Sagesse / 100)
@@ -194,18 +189,16 @@ function autoHeal()
 	var tp = getTP();
 	if(inArray(chips, CHIP_REGENERATION))
 	{
-		var chipStats = getChipEffects(CHIP_REGENERATION);
-		var chipHeal = (chipStats[0][1]);
-		if (getLife() + (chipHeal * (1 + getWisdom() / 100)) <= getTotalLife()) useChip(CHIP_REGENERATION, getLeek());
+		if (getLife() + (200 * (1 + getWisdom() / 100)) <= getTotalLife()) useChip(CHIP_REGENERATION, getLeek());
 	}
 	if(inArray(chips, CHIP_VACCINE))
 	{
-		if (getLife() / getTotalLife() * 100 < 60) useChip(CHIP_VACCINE, getLeek());
+		if (36 * (1 + getWisdom() / 100) <= getTotalLife() - getLife()) useChip(CHIP_VACCINE, getLeek());
 	}
 	if(inArray(chips, CHIP_CURE))
-		if (35 * (1 + getWisdom() / 100) <= getTotalLife() - getLife()) useChip(CHIP_CURE, getLeek());
+		if (39 * (1 + getWisdom() / 100) <= getTotalLife() - getLife()) useChip(CHIP_CURE, getLeek());
 	if(inArray(chips, CHIP_BANDAGE))
-		if (getLife() < getTotalLife()) useChip(CHIP_BANDAGE, getLeek());
+		if (12.5 * (1 + getWisdom() / 100) <= getTotalLife() - getLife()) useChip(CHIP_BANDAGE, getLeek());
 	return (getTP() < tp) ? 0 : null;
 }
 
