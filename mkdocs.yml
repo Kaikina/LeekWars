@@ -1,0 +1,31 @@
+site_name: LeekWars Library
+repo_name: Kaikina/LeekWars
+repo_url: https://github.com/Kaikina/LeekWars
+theme:
+  name: material
+  logo: images/leek.svg
+  favicon: images/favicon.png
+  language: fr
+  palette:
+    scheme: slate
+    primary: green
+    accent: green
+extra:
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/Kaikina
+    - icon: fontawesome/solid/seedling
+      link: https://leekwars.com/farmer/71230
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/tgirou
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+plugins:
+  - search # necessary for search to work
+  - minify:
+      minify_html: true
+
